@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes confetti {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti 3s linear infinite;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .slide-in {
+            animation: slideIn 1s forwards;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center min-h-screen p-4 relative">
+    <div id="nameContainer" class="bg-white p-6 md:p-10 rounded-lg shadow-2xl text-center w-full max-w-md transform transition duration-500 hover:scale-105 fade-in">
+        <input id="nameInput" type="text" placeholder="Enter your name" class="mb-4 p-2 border rounded">
+        <button id="nameButton" class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-300 transition duration-300 ease-in-out">Submit</button>
+    </div>
+
+    <div id="birthdayContainer" class="bg-white p-6 md:p-10 rounded-lg shadow-2xl text-center w-full max-w-md transform transition duration-500 hover:scale-105 fade-in hidden">
+        <h1 id="greeting" class="text-3xl md:text-4xl font-bold text-pink-500 animate-pulse">Good Morning! Happy Birthday!</h1>
+        <p class="mt-4 text-base md:text-lg text-gray-700">Wishing you a day filled with love, joy, and happiness.</p>
+
+        <!-- NEW MESSAGES AFTER ENTERING NAME -->
+        <div id="nameEnteredCards" class="grid gap-4 mt-6 hidden">
+            <div class="bg-indigo-100 p-4 rounded-lg shadow-md">
+                <p class="text-indigo-700">🎯 Another year, another opportunity to chase your dreams! Have a fantastic birthday! 🎯</p>
+            </div>
+            <div class="bg-orange-100 p-4 rounded-lg shadow-md">
+                <p class="text-orange-700">✨ Your best years are still ahead of you—keep shining and inspiring! ✨</p>
+            </div>
+            <div class="bg-teal-100 p-4 rounded-lg shadow-md">
+                <p class="text-teal-700">🌟 May this year bring you closer to all the goals and dreams you cherish! 🌟</p>
+            </div>
+        </div>
+
+        <!-- Surprise Button -->
+        <button id="surpriseButton" class="mt-6 bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-300 transition duration-300 ease-in-out">
+            Click for a Surprise!
+        </button>
+
+        <div id="surpriseMessage" class="mt-4 text-base md:text-lg text-green-500 hidden">🎉 Surprise! Have an amazing birthday! 🎉</div>
+
+        <!-- Hidden Wishes Section -->
+        <div id="wishesCards" class="grid gap-4 mt-6 hidden">
+            <div class="bg-pink-100 p-4 rounded-lg shadow-md hidden">
+                <p class="text-pink-700">🎉 Wishing you a fantastic birthday filled with love and joy! 🎉</p>
+            </div>
+            <div class="bg-yellow-100 p-4 rounded-lg shadow-md hidden">
+                <p class="text-yellow-700">🎂 May your special day be as wonderful as you are! 🎂</p>
+            </div>
+            <div class="bg-green-100 p-4 rounded-lg shadow-md hidden">
+                <p class="text-green-700">🎁 Here's to a year full of blessings and adventures! 🎁</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded-lg shadow-md hidden">
+                <p class="text-blue-700">🎈 May your birthday be filled with laughter and joy! 🎈</p>
+            </div>
+            <div class="bg-purple-100 p-4 rounded-lg shadow-md hidden">
+                <p class="text-purple-700">🎉 Cheers to another year of wonderful you! 🎉</p>
+            </div>
+            <div class="bg-red-100 p-4 rounded-lg shadow-md hidden">
+                <p class="text-red-700">🎂 Hope your day is as special as you are! 🎂</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const nameInput = document.getElementById('nameInput');
+        const nameButton = document.getElementById('nameButton');
+        const nameContainer = document.getElementById('nameContainer');
+        const birthdayContainer = document.getElementById('birthdayContainer');
+        const greeting = document.getElementById('greeting');
+        const nameEnteredCards = document.getElementById('nameEnteredCards');
+        const surpriseButton = document.getElementById('surpriseButton');
+        const wishesCards = document.getElementById('wishesCards');
+        const surpriseMessage = document.getElementById('surpriseMessage');
+
+        let isSurpriseActive = false;
+
+        nameButton.addEventListener('click', function() {
+            const name = nameInput.value;
+            if (name) {
+                greeting.textContent = `Good Morning, ${name}! Happy Birthday!`;
+                nameContainer.classList.add('hidden');
+                birthdayContainer.classList.remove('hidden');
+                nameEnteredCards.classList.remove('hidden'); // Show messages
+            }
+        });
+
+        surpriseButton.addEventListener('click', function() {
+            if (isSurpriseActive) {
+                // Reset to show the first 3 messages
+                nameEnteredCards.classList.remove('hidden');
+                wishesCards.classList.add('hidden');
+                surpriseMessage.classList.add('hidden');
+            } else {
+                // Show the surprise message and wishes
+                nameEnteredCards.classList.add('hidden'); // Hide first 3 messages
+                wishesCards.classList.remove('hidden'); // Show hidden wishes
+                surpriseMessage.classList.remove('hidden');
+                createConfetti();
+                animateCards();
+            }
+
+            isSurpriseActive = !isSurpriseActive; // Toggle the state
+        });
+
+        function createConfetti() {
+            const colors = ['#ff69b4', '#ff6347', '#ffd700', '#32cd32', '#1e90ff', '#8a2be2'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 90000);
+            }
+        }
+
+        function animateCards() {
+            const cards = wishesCards.children;
+            let delay = 2000;  // Start all the cards dropping after 2 seconds
+
+            for (let i = 0; i < cards.length; i++) {
+                setTimeout(() => {
+                    cards[i].classList.remove('hidden');
+                    cards[i].classList.add('slide-in');
+                }, delay);
+                delay += 2000;  // Increase delay by 10 seconds for each card
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
